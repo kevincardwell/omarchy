@@ -75,6 +75,11 @@ assert_image "a Hebrew layout stays out as well" il "$plymouthd"
 assert_image "a Latin layout still reaches the LUKS prompt" de "$latin"
 assert_image "a Latin first layout with a non-Latin second still reaches it" us,ru "$latin"
 assert_image "an omarchy_hooks.conf from before the package still keeps it out" ru,us "$plymouthd" "" "$test_tmp/stale_hooks.conf"
+# Before the package, omarchy_hooks.conf never listed the file, so on such a
+# machine with a Latin layout Plymouth's own copy is what carries the layout to
+# the prompt since 26.134.222-3. Refusing it would switch a German prompt back
+# to US, and a passphrase typed in German would no longer unlock.
+assert_image "an omarchy_hooks.conf from before the package keeps a Latin layout at the prompt" de "$latin" "" "$test_tmp/stale_hooks.conf"
 
 # The file is refused wherever a hook copies it from.
 printf 'XKBLAYOUT=ru\n' >"$vconsole"
